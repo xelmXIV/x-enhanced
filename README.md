@@ -7,7 +7,7 @@ This plugin is a complete re-work and update of [renhanced](https://github.com/A
 <img width="1488" height="796" alt="x-enhanced" src="https://github.com/user-attachments/assets/8b6fc2fc-979d-41f6-85b3-123f12904606" />
 
 ## Plugins:
-* Theme selector - a very customizable theme editor with color picking option that supports RGB, HSL and hex. a field entry box to manually write hex color codes for those who wish to write and test their own themes. if not there are 11 default presets to choose from by right clicking the selected theme profile and clicking reset to default preset which will cycle through all the 11 default presets or you could create a new theme and it will generate you a random color template by default. Right click and set the default on startup once you've found your color scheme.
+* Theme creator - a very customizable theme editor with color picking option that supports RGB, HSL and hex. a field entry box to manually write hex color codes for those who wish to write and test their own themes. if not there are 11 default presets to choose from by right clicking the selected theme profile and clicking reset to default preset which will cycle through all the 11 default presets or you could create a new theme and it will generate you a random color template by default. Right click and set the default on startup once you've found your color scheme.
 * Favorite "star" button on the left side panel - for fast access
 * Favorite navigation arrow buttons - quickly switch between next or previous favorite channels to check for active players
 
