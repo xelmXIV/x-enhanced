@@ -1,15 +1,19 @@
 {
-  "activeTheme": "Cauchemar",
+  "defaultTheme": "Default",
+  "activeTheme": "Sortilège",
+  "deletedPresets": [
+    "Niebla"
+  ],
   "themes": {
     "MX": {
-      "mainColor": "#12211c",
-      "accentColor": "#c5bfbf",
-      "accentColor2": "#5900ff",
-      "errorColor": "#5900ff",
-      "stateOnline": "#309b22",
-      "stateAway": "#89010e",
-      "patreonColor": "#c2a200",
-      "devColor": "#fd35dc"
+      "mainColor": "#0e1614",
+      "accentColor": "#2dd4bf",
+      "accentColor2": "#38bdf8",
+      "errorColor": "#fb7185",
+      "stateOnline": "#2dd4bf",
+      "stateAway": "#fbbf24",
+      "patreonColor": "#f5b50e",
+      "devColor": "#2dd4bf"
     },
     "Cauchemar": {
       "mainColor": "#120924",
@@ -22,10 +26,10 @@
       "devColor": "#a855f7"
     },
     "Default": {
-      "mainColor": "#0d0d0d",
-      "accentColor": "#68bd00",
-      "accentColor2": "#83b300",
-      "errorColor": "#bfff70",
+      "mainColor": "#171717",
+      "accentColor": "#81bd00",
+      "accentColor2": "#81bd00",
+      "errorColor": "#81bd00",
       "stateOnline": "#10b981",
       "stateAway": "#89010e",
       "patreonColor": "#f5b50e",
@@ -33,16 +37,16 @@
     },
     "Souvenir": {
       "mainColor": "#1c1917",
-      "accentColor": "#696b66",
-      "accentColor2": "#fb923c",
+      "accentColor": "#837d8c",
+      "accentColor2": "#e9fa00",
       "errorColor": "#ef4444",
-      "stateOnline": "#10b981",
-      "stateAway": "#89010e",
+      "stateOnline": "#00ff4c",
+      "stateAway": "#970716",
       "patreonColor": "#f5b50e",
       "devColor": "#f97316"
     },
     "Sortilège": {
-      "mainColor": "#0f172a",
+      "mainColor": "#01001f",
       "accentColor": "#8b5cf6",
       "accentColor2": "#a78bfa",
       "errorColor": "#ef4444",
@@ -53,16 +57,16 @@
     },
     "Grincheux": {
       "mainColor": "#1f2937",
-      "accentColor": "#000000",
-      "accentColor2": "#f87171",
-      "errorColor": "#dc2626",
+      "accentColor": "#040404",
+      "accentColor2": "#feffdb",
+      "errorColor": "#040404",
       "stateOnline": "#10b981",
       "stateAway": "#89010e",
-      "patreonColor": "#f5b50e",
-      "devColor": "#ef4444"
+      "patreonColor": "#e1ff00",
+      "devColor": "#e4be01"
     },
     "Coucher de soleil": {
-      "mainColor": "#2a1215",
+      "mainColor": "#1d0c0e",
       "accentColor": "#f43f5e",
       "accentColor2": "#fb7185",
       "errorColor": "#e11d48",
@@ -81,16 +85,6 @@
       "patreonColor": "#f5b50e",
       "devColor": "#10b981"
     },
-    "Niebla": {
-      "mainColor": "#3b086d",
-      "accentColor": "#856f9b",
-      "accentColor2": "#38bdf8",
-      "errorColor": "#ef4444",
-      "stateOnline": "#10b981",
-      "stateAway": "#89010e",
-      "patreonColor": "#f5b50e",
-      "devColor": "#06b6d4"
-    },
     "Luz de luna": {
       "mainColor": "#0f172a",
       "accentColor": "#6366f1",
@@ -102,14 +96,14 @@
       "devColor": "#6366f1"
     },
     "Cantina": {
-      "mainColor": "#271a12",
-      "accentColor": "#eab308",
+      "mainColor": "#171616",
+      "accentColor": "#ffbf00",
       "accentColor2": "#facc15",
-      "errorColor": "#ff0031",
+      "errorColor": "#a85a00",
       "stateOnline": "#10b981",
       "stateAway": "#89010e",
-      "patreonColor": "#f5b50e",
-      "devColor": "#eab308"
+      "patreonColor": "#fff47a",
+      "devColor": "#ffb10a"
     }
   }
 }
