@@ -165,13 +165,11 @@ const addGlobalStyles = () => {
                 --mainColor-darker-trans-hi: ${hexToRgba(adjustColor(main, -20), 0.7)} !important;
                 --mainColor-darker-trans-lo: ${hexToRgba(adjustColor(main, -20), 0.3)} !important;
             }
-            /* Game circle icon / active channel item uses Lobby border (errorColor) */
             body.${className} .channelsList .channelItem.router-link-active,
             body.${className} .channelsList .channelItem:hover {
                 background-color: ${error} !important;
                 border-color: ${error} !important;
             }
-            /* Bottom theme bar selection uses Primary accent (accentColor) */
             .custom-theme-btn[data-active-theme="${name}"] {
                 background: ${accent} !important;
                 color: #ffffff !important;
@@ -223,7 +221,7 @@ const addGlobalStyles = () => {
 
         .theme-action-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -315,7 +313,6 @@ const addGlobalStyles = () => {
             user-select: text !important;
             -webkit-user-select: text !important;
         }
-        /* Windows default blue text selection style */
         .fc-modal-field input[type="text"]::selection {
             background: #0078d7 !important;
             color: #ffffff !important;
@@ -554,7 +551,6 @@ const fightcadePlugins = (fcWindow) => {
                 }
             });
 
-            // If an edit theme modal is open, swap the fields to target the newly clicked profile seamlessly
             if (currentActiveModalBox && !skipLiveModalBoxUpdate) {
                 const headerTitle = currentActiveModalBox.querySelector('.fc-modal-header');
                 if (headerTitle && headerTitle.textContent.startsWith('Edit Theme')) {
@@ -893,7 +889,6 @@ const fightcadePlugins = (fcWindow) => {
             nameInput.focus();
             nameInput.select();
             
-            // Allow live updating the target editing theme name if modified in input box
             nameInput.oninput = () => {
                 modalBox.dataset.editingTheme = nameInput.value.trim();
             };
@@ -969,42 +964,6 @@ const fightcadePlugins = (fcWindow) => {
             }
         };
 
-        const cloneTheme = (name = activeSelectedTheme) => {
-            if (!name) return alert('Please select a theme to clone.');
-            const customThemes = getCustomThemes();
-            
-            let baseCloneName = `${name} Copy`;
-            let cloneName = baseCloneName;
-            let counter = 2;
-            while ((customThemes[cloneName] || CONFIG.themes.includes(cloneName)) && counter <= 100) {
-                cloneName = `${baseCloneName} ${counter}`;
-                counter++;
-            }
-
-            const promptName = prompt(`Clone theme as:`, cloneName);
-            if (promptName) {
-                const finalName = promptName.trim();
-                const baseColors = customThemes[name] || {
-                    mainColor: '#0a1f18',
-                    accentColor: '#ce1126',
-                    accentColor2: "#00e676",
-                    errorColor: '#ff0031',
-                    stateOnline: '#59b240',
-                    stateAway: '#ef9f00',
-                    patreonColor: '#f5b50e',
-                    devColor: '#f5b50e'
-                };
-                customThemes[finalName] = { ...baseColors };
-                if (!CONFIG.themes.includes(finalName)) {
-                    CONFIG.themes.push(finalName);
-                }
-                saveCustomThemes(customThemes, finalName);
-                addGlobalStyles();
-                renderThemeButtons();
-                setTheme(finalName);
-            }
-        };
-
         const showContextMenu = (e, themeName) => {
             e.preventDefault();
             activeSelectedTheme = themeName;
@@ -1018,8 +977,7 @@ const fightcadePlugins = (fcWindow) => {
 
             menu.innerHTML = `
                 <div class="fc-context-menu-item" id="ctx-edit" title="Edit">Edit</div>
-                <div class="fc-context-menu-item" id="ctx-clone" title="Clone">Clone</div>
-                <div class="fc-context-menu-item" id="ctx-delete" title="Delete or Del" style="color: #ef4444;">Delete or Del</div>
+                <div class="fc-context-menu-item" id="ctx-delete" title="delete" style="color: #ef4444;">delete</div>
             `;
 
             document.body.appendChild(menu);
@@ -1028,7 +986,6 @@ const fightcadePlugins = (fcWindow) => {
             setTimeout(() => window.addEventListener('click', removeMenu, { once: true }), 10);
 
             document.getElementById('ctx-edit').onclick = () => openEditThemeModal(themeName);
-            document.getElementById('ctx-clone').onclick = () => cloneTheme(themeName);
             document.getElementById('ctx-delete').onclick = () => deleteTheme(themeName);
         };
 
@@ -1043,14 +1000,12 @@ const fightcadePlugins = (fcWindow) => {
             actionBar.innerHTML = `
                 <svg class="theme-action-icon" id="act-add" title="New" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 <svg class="theme-action-icon" id="act-rename" title="Edit" viewBox="0 0 24 24"><path d="M18.41 5.8L17.2 4.59c-.78-.78-2.05-.78-2.83 0l-2.68 2.68 3.95 3.95 2.77-2.77c.79-.78.79-2.05 0-2.65zM2 17.25V21h3.75L15.42 11.33l-3.75-3.75L2 17.25z"/></svg>
-                <svg class="theme-action-icon" id="act-clone" title="Clone" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                <svg class="theme-action-icon" id="act-delete" title="Delete or Del" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <svg class="theme-action-icon" id="act-delete" title="delete" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
             `;
             themeContainer.appendChild(actionBar);
 
             document.getElementById('act-add').onclick = () => openNewThemeModal();
             document.getElementById('act-rename').onclick = () => openEditThemeModal(activeSelectedTheme);
-            document.getElementById('act-clone').onclick = () => cloneTheme();
             document.getElementById('act-delete').onclick = () => deleteTheme();
 
             const customThemes = getCustomThemes();
@@ -1145,9 +1100,7 @@ const fightcadePlugins = (fcWindow) => {
     });
 };
 
-// 2. The inject.js Bridge Implementation
 const setupInjectBridge = (fcWindow) => {
-    // Expose internal utility hooks and configuration securely to the renderer or global bridge
     fcWindow.__FC_ENHANCE_BRIDGE = {
         getConfig: () => CONFIG,
         getThemes: () => getCustomThemes(),
