@@ -387,30 +387,44 @@ const createStatusElement = (isAway) => {
 };
 
 // ==========================================
-// MESSAGE PROCESSING & CHAT ENHANCEMENTS
+// MESSAGE PROCESSING & CHAT ENHANCEMENTS (OPTIMIZED)
 // ==========================================
 
 const processMessages = (FCADE, mutations = []) => {
     if (!CONFIG.addMorePlayerInfoToChat || !FCADE) return;
 
     const globalUsers = FCADE.globalUsers || {};
-    let newMessages = [];
+    const newMessages = [];
 
     if (mutations.length > 0) {
-        for (const mutation of mutations) {
-            for (const node of mutation.addedNodes) {
-                if (node.nodeType === 1) { 
+        for (let i = 0; i < mutations.length; i++) {
+            const mutation = mutations[i];
+            const added = mutation.addedNodes;
+            for (let j = 0; j < added.length; j++) {
+                const node = added[j];
+                if (node.nodeType === 1) { // Safe element check
                     if (node.classList.contains('message') && !node.dataset.hasFlag) {
                         newMessages.push(node);
-                    }
-                    if (node.querySelectorAll) {
-                        newMessages.push(...node.querySelectorAll('.message:not([data-has-flag])'));
+                    } else if (node.getElementsByClassName) {
+                        const msgs = node.getElementsByClassName('message');
+                        for (let k = 0; k < msgs.length; k++) {
+                            const msg = msgs[k];
+                            if (!msg.dataset.hasFlag) {
+                                newMessages.push(msg);
+                            }
+                        }
                     }
                 }
             }
         }
     } else {
-        newMessages = Array.from(document.querySelectorAll('#app div.message:not([data-has-flag])'));
+        const msgs = document.getElementsByClassName('message');
+        for (let i = 0; i < msgs.length; i++) {
+            const msg = msgs[i];
+            if (!msg.dataset.hasFlag) {
+                newMessages.push(msg);
+            }
+        }
     }
 
     if (newMessages.length === 0) return;
@@ -418,13 +432,18 @@ const processMessages = (FCADE, mutations = []) => {
     const activeChannelId = FCADE.activeChannelId;
     const usersListChildren = FCADE.$refs?.[activeChannelId]?.[0]?.$refs?.usersList?.$children || [];
     const channelUsersMap = new Map();
-    for (const child of usersListChildren) {
+    for (let i = 0; i < usersListChildren.length; i++) {
+        const child = usersListChildren[i];
         if (child?.user?.id) channelUsersMap.set(child.user.id, child);
     }
 
-    for (const messageElement of newMessages) {
-        const authorElement = messageElement.querySelector('span.author');
-        if (!authorElement) continue;
+    for (let i = 0; i < newMessages.length; i++) {
+        const messageElement = newMessages[i];
+        if (messageElement.dataset.hasFlag) continue;
+
+        const authors = messageElement.getElementsByClassName('author');
+        if (authors.length === 0) continue;
+        const authorElement = authors[0];
 
         const userKey = authorElement.innerText.trim();
         const globalUser = globalUsers[userKey];
@@ -432,43 +451,46 @@ const processMessages = (FCADE, mutations = []) => {
         if (globalUser?.country) {
             const userFound = channelUsersMap.get(userKey);
 
-            if (!messageElement.querySelector('.fc-enhanced-element')) {
-                if (authorElement.parentElement) {
-                    authorElement.parentElement.insertBefore(createStatusElement(globalUser?.away), authorElement);
-                }
-                authorElement.appendChild(createFlagElement(globalUser.country));
+            if (authorElement.parentElement && messageElement.getElementsByClassName('statusWrapper').length === 0) {
+                authorElement.parentElement.insertBefore(createStatusElement(globalUser?.away), authorElement);
+            }
 
-                if (userFound?.rankSrc) {
-                    authorElement.appendChild(createRankElement(userFound.rankSrc, userFound.rankTitle));
-                }
+            // Single document fragment batching to eliminate multiple layout reflows
+            const fragment = document.createDocumentFragment();
+            fragment.appendChild(createFlagElement(globalUser.country));
 
-                let pingSrc = userFound?.pingSrc;
-                let pingTitle = userFound?.pingTitle;
-                if (!pingSrc && globalUser?.ping !== undefined) {
-                    const p = globalUser.ping;
-                    if (p < 100) {
-                        pingSrc = 'static/img/ping3.png';
-                        pingTitle = `Good ping (~${p} ms)`;
-                    } else if (p < 200) {
-                        pingSrc = 'static/img/ping2.png';
-                        pingTitle = `Fair ping (~${p} ms)`;
-                    } else {
-                        pingSrc = 'static/img/ping1.png';
-                        pingTitle = `Poor ping (~${p} ms)`;
-                    }
-                }
-                if (pingSrc) {
-                    authorElement.appendChild(createPingElement(pingSrc, pingTitle));
-                }
+            if (userFound?.rankSrc) {
+                fragment.appendChild(createRankElement(userFound.rankSrc, userFound.rankTitle));
+            }
 
-                if (globalUser?.ping !== undefined) {
-                    const pingText = document.createElement('span');
-                    pingText.className = 'pingText fc-enhanced-element';
-                    pingText.style.cssText = 'font-size: small; margin-left: 5px; font-weight: normal; opacity: 0.8;';
-                    pingText.innerHTML = `(ping: ~${globalUser.ping} ms)`;
-                    authorElement.appendChild(pingText);
+            let pingSrc = userFound?.pingSrc;
+            let pingTitle = userFound?.pingTitle;
+            if (!pingSrc && globalUser?.ping !== undefined) {
+                const p = globalUser.ping;
+                if (p < 100) {
+                    pingSrc = 'static/img/ping3.png';
+                    pingTitle = `Good ping (~${p} ms)`;
+                } else if (p < 200) {
+                    pingSrc = 'static/img/ping2.png';
+                    pingTitle = `Fair ping (~${p} ms)`;
+                } else {
+                    pingSrc = 'static/img/ping1.png';
+                    pingTitle = `Poor ping (~${p} ms)`;
                 }
             }
+            if (pingSrc) {
+                fragment.appendChild(createPingElement(pingSrc, pingTitle));
+            }
+
+            if (globalUser?.ping !== undefined) {
+                const pingText = document.createElement('span');
+                pingText.className = 'pingText fc-enhanced-element';
+                pingText.style.cssText = 'font-size: small; margin-left: 5px; font-weight: normal; opacity: 0.8;';
+                pingText.innerHTML = `(ping: ~${globalUser.ping} ms)`;
+                fragment.appendChild(pingText);
+            }
+
+            authorElement.appendChild(fragment);
             messageElement.dataset.hasFlag = "true";
         }
     }
