@@ -12,7 +12,7 @@ This plugin is a complete re-work and update of [renhanced](https://github.com/A
 * Favorite navigation arrow buttons - quickly switch between next or previous favorite channels to check for active players
 
 ## Installation
-1. Download `x-enhanced.zip` and place all of the contents from the .zip inside your `Fightcade\fc2-electron\resources\app\inject` directory.
+1. Download `x-enhanced.zip` and place all of the contents from .zip inside your `Fightcade\fc2-electron\resources\app\inject` directory.
 
 ## Configuration
 You can enable/disable each plugin changing `true` to `false` for individual options in `CONFIG` section on top of the `inject.js` file. Additionally you can select startup theme:
