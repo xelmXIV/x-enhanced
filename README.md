@@ -28,3 +28,12 @@ const CONFIG = {
 ```
 
 #### have fun :) 
+
+If you would like to support me on this project.
+Thank you! <3 
+
+<div align="center">
+  <a href="https://www.buymeacoffee.com/xelm" target="_blank">
+    <img src="https://buymeacoffee.com" alt="Buy Me A Coffee" height="60" width="217">
+  </a>
+</div>
