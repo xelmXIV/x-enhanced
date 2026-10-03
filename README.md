@@ -26,14 +26,17 @@ const CONFIG = {
     startupTheme: "Default"
 };
 ```
-
-#### have fun :) 
-
-If you would like to support me on this project.
-Thank you! <3 
-
 <div align="center">
-  <a href="https://www.buymeacoffee.com/xelm" target="_blank">
-    <img src="https://buymeacoffee.com" alt="Buy Me A Coffee" height="60" width="217">
-  </a>
+
+<a href="https://buymeacoffee.com/xelm" target="_blank">
+  <img src="https://github.com/user-attachments/assets/cdc1b7e6-4284-4f83-95d9-5643a083d90a" alt="Support xelm" width="220">
+</a>
+
+<br/>
+<br/>
+
+*If you would like to support the development of this project, contributions are greatly appreciated!*
+
+Thank you! ❤️
+
 </div>
