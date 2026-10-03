@@ -2,7 +2,7 @@
 * Author: xelm
 * Created: 2026-23-09
 
-This plugin is a complete re-work and update of [renhanced](https://github.com/Arkadyzja/fcade-renhanced)
+This plugin is a complete re-work and update of renhanced
 <img width="1488" height="795" alt="10" src="https://github.com/user-attachments/assets/e5cc0711-4efa-49ba-ac52-64b800d95dd6" />
 <img width="1488" height="796" alt="x-enhanced" src="https://github.com/user-attachments/assets/8b6fc2fc-979d-41f6-85b3-123f12904606" />
 
