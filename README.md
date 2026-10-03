@@ -6,10 +6,15 @@ This plugin is a complete re-work and update of [renhanced](https://github.com/A
 <img width="1488" height="795" alt="10" src="https://github.com/user-attachments/assets/e5cc0711-4efa-49ba-ac52-64b800d95dd6" />
 <img width="1488" height="796" alt="x-enhanced" src="https://github.com/user-attachments/assets/8b6fc2fc-979d-41f6-85b3-123f12904606" />
 
-## Plugins:
-* Theme creator: a very customizable theme editor with color picking option that supports RGB, HSL and hex. a field entry box to manually write hex color codes for those who wish to write and test their own themes. if not there are 11 default presets to choose from by right clicking the selected theme profile and clicking reset to default preset which will cycle through all the 11 default presets or you could create a new theme and it will generate you a random color template by default. Right click and set the default on startup once you've found your color scheme.
-* Favorite: "star" button on the left side panel - for fast access
-* Favorite: navigation arrow buttons - quickly switch between next or previous favorite channels to check for active players
+## Plugins
+### **Theme Creator**
+* **Custom Color Picker:** Easily customize themes using RGB, HSL, or Hex values, or manually enter Hex codes to build and test custom themes.
+* **Presets & Quick Generation:** Choose from 11 built-in presets by right-clicking a theme profile and selecting **Reset to Default Preset** (cycles through all presets), or create a new theme to generate a randomized color template.
+* **Startup Preference:** Set your preferred theme as the default on launch by right-clicking the theme profile.
+
+### **Favorites**
+* **Quick Access Button:** Access your saved favorites instantly via the "star" icon on the left panel.
+* **Favorite Navigation:** Use the navigation arrows to swiftly cycle through favorited channels and check for active players.
 
 ## Installation: 
 Download `x-enhanced-main.zip`
