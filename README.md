@@ -2,19 +2,21 @@
 * Author: xelm
 * Created: 2026-23-09
 
-This plugin is a complete re-work of renhanced
+This plugin is a complete re-work of renhanced.
 <img width="1488" height="795" alt="10" src="https://github.com/user-attachments/assets/e5cc0711-4efa-49ba-ac52-64b800d95dd6" />
 <img width="1488" height="796" alt="x-enhanced" src="https://github.com/user-attachments/assets/8b6fc2fc-979d-41f6-85b3-123f12904606" />
 
 ## Plugins
 ### **Theme Creator**
-* **Custom Color Picker:** Easily customize themes using RGB, HSL, or Hex values, or manually enter Hex codes to build and test custom themes.
+* **Custom Color Picker:** Easily customize themes using RGB, HSL or Hex values. alternatively you can manually enter Hex values to precisely set your themes.
 * **Presets & Quick Generation:** Choose from 11 built-in presets by right-clicking a theme profile and selecting **Reset to Default Preset** (cycles through all presets), or create a new theme to generate a randomized color template.
 * **Startup Preference:** Set your preferred theme as the default on launch by right-clicking the theme profile.
 
 ### **Favorites**
 * **Quick Access Button:** Access your saved favorites instantly via the "star" icon on the left panel.
-* **Favorite Navigation:** Use the navigation arrows to swiftly cycle through favorited channels and check for active players.
+
+### **Rich player info**  (fixed) 
+* **gives accurate and up to date representation.**
 
 ## Installation: 
 Download `x-enhanced-main.zip`
