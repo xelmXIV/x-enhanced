@@ -1,6 +1,14 @@
 /**
- * Fightcade x-Enhance
- * Original by --sexe.xelm
+ * 	x-enhanced
+ * 		by --sexe.xelm
+ * 
+ * (Advanced Performance Build: Oct 3 2026)
+ *
+ * Aggressive CPU-saving
+ * Deduplicates things that are repeated by reusing information it already knows.
+ * Minimizes DOM work in the hot MutationObserver path.
+ * Ignores irrelevant DOM activity.
+ * Only processes the actual new/changed messages or data.
  */
 
 const fs = require('fs');
@@ -390,54 +398,50 @@ const createStatusElement = (isAway) => {
 // MESSAGE PROCESSING & CHAT ENHANCEMENTS (OPTIMIZED)
 // ==========================================
 
-const processMessages = (FCADE, mutations = []) => {
-    if (!CONFIG.addMorePlayerInfoToChat || !FCADE) return;
+// Cached channel-user lookup. The map is rebuilt only when the active channel
+// changes or a mutation occurs inside the channel's users list.
+let cachedUsersChannelId = null;
+let cachedUsersChildren = null;
+let cachedUsersListElement = null;
+let cachedChannelUsersMap = null;
+
+const rebuildChannelUsersMap = (FCADE, activeChannelId) => {
+    const usersList = FCADE.$refs?.[activeChannelId]?.[0]?.$refs?.usersList;
+    const usersListChildren = usersList?.$children || [];
+
+    if (cachedChannelUsersMap && cachedUsersChannelId === activeChannelId && cachedUsersChildren === usersListChildren) {
+        return cachedChannelUsersMap;
+    }
+
+    const map = new Map();
+    for (let i = 0, len = usersListChildren.length; i < len; i++) {
+        const child = usersListChildren[i];
+        const id = child?.user?.id;
+        if (id) map.set(id, child);
+    }
+
+    cachedUsersChannelId = activeChannelId;
+    cachedUsersChildren = usersListChildren;
+    cachedUsersListElement = usersList?.$el || null;
+    cachedChannelUsersMap = map;
+    return map;
+};
+
+const invalidateChannelUsersCache = () => {
+    cachedUsersChannelId = null;
+    cachedUsersChildren = null;
+    cachedUsersListElement = null;
+    cachedChannelUsersMap = null;
+};
+
+const processMessages = (FCADE, newMessages = []) => {
+    if (!CONFIG.addMorePlayerInfoToChat || !FCADE || newMessages.length === 0) return;
 
     const globalUsers = FCADE.globalUsers || {};
-    const newMessages = [];
-
-    if (mutations.length > 0) {
-        for (let i = 0; i < mutations.length; i++) {
-            const mutation = mutations[i];
-            const added = mutation.addedNodes;
-            for (let j = 0; j < added.length; j++) {
-                const node = added[j];
-                if (node.nodeType === 1) { // Safe element check
-                    if (node.classList.contains('message') && !node.dataset.hasFlag) {
-                        newMessages.push(node);
-                    } else if (node.getElementsByClassName) {
-                        const msgs = node.getElementsByClassName('message');
-                        for (let k = 0; k < msgs.length; k++) {
-                            const msg = msgs[k];
-                            if (!msg.dataset.hasFlag) {
-                                newMessages.push(msg);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        const msgs = document.getElementsByClassName('message');
-        for (let i = 0; i < msgs.length; i++) {
-            const msg = msgs[i];
-            if (!msg.dataset.hasFlag) {
-                newMessages.push(msg);
-            }
-        }
-    }
-
-    if (newMessages.length === 0) return;
-
     const activeChannelId = FCADE.activeChannelId;
-    const usersListChildren = FCADE.$refs?.[activeChannelId]?.[0]?.$refs?.usersList?.$children || [];
-    const channelUsersMap = new Map();
-    for (let i = 0; i < usersListChildren.length; i++) {
-        const child = usersListChildren[i];
-        if (child?.user?.id) channelUsersMap.set(child.user.id, child);
-    }
+    const channelUsersMap = rebuildChannelUsersMap(FCADE, activeChannelId);
 
-    for (let i = 0; i < newMessages.length; i++) {
+    for (let i = 0, len = newMessages.length; i < len; i++) {
         const messageElement = newMessages[i];
         if (messageElement.dataset.hasFlag) continue;
 
@@ -995,27 +999,78 @@ const fightcadePlugins = (fcWindow) => {
         initUIElements();
 
         // ==========================================
-        // OPTIMIZED MUTATION OBSERVER (rAF Batched)
+        // LOW-OVERHEAD MUTATION OBSERVER
         // ==========================================
+        // Fightcade's Vue UI can generate a large number of unrelated DOM
+        // mutations. We collect only newly-added .message elements and batch
+        // them once per animation frame. No mutation array is retained.
         const appContainer = fcWindow.document.querySelector('#app');
         if (appContainer) {
-            let mutationQueue = [];
-            let isRafScheduled = false;
+            let pendingMessages = new Set();
+            let frameScheduled = false;
+
+            const scheduleMessageProcessing = () => {
+                if (frameScheduled || pendingMessages.size === 0) return;
+                frameScheduled = true;
+
+                requestAnimationFrame(() => {
+                    frameScheduled = false;
+                    if (pendingMessages.size === 0) return;
+
+                    const messages = Array.from(pendingMessages);
+                    pendingMessages.clear();
+                    processMessages(FCADE, messages);
+                });
+            };
+
+            const collectMessages = (node) => {
+                if (node.nodeType !== 1) return;
+
+                const element = node;
+                if (element.classList.contains('message')) {
+                    if (!element.dataset.hasFlag) pendingMessages.add(element);
+                    return;
+                }
+
+                if (element.getElementsByClassName) {
+                    const messages = element.getElementsByClassName('message');
+                    for (let i = 0, len = messages.length; i < len; i++) {
+                        const message = messages[i];
+                        if (!message.dataset.hasFlag) pendingMessages.add(message);
+                    }
+                }
+            };
 
             const optimizedObserver = new MutationObserver((mutations) => {
-                mutationQueue.push(...mutations);
-                if (!isRafScheduled) {
-                    isRafScheduled = true;
-                    requestAnimationFrame(() => {
-                        const currentMutations = mutationQueue;
-                        mutationQueue = [];
-                        isRafScheduled = false;
-                        processMessages(FCADE, currentMutations);
-                    });
+                let foundMessage = false;
+                let usersListChanged = false;
+
+                for (let i = 0, len = mutations.length; i < len; i++) {
+                    const mutation = mutations[i];
+                    const target = mutation.target;
+
+                    // User-list changes can invalidate rank/ping references.
+                    // Use the cached DOM element instead of walking ancestors for
+                    // every mutation.
+                    if (!usersListChanged && cachedUsersListElement) {
+                        usersListChanged = target === cachedUsersListElement ||
+                            cachedUsersListElement.contains?.(target);
+                    }
+
+                    const added = mutation.addedNodes;
+                    for (let j = 0, addedLen = added.length; j < addedLen; j++) {
+                        const before = pendingMessages.size;
+                        collectMessages(added[j]);
+                        if (pendingMessages.size !== before) foundMessage = true;
+                    }
                 }
+
+                if (usersListChanged) invalidateChannelUsersCache();
+                if (foundMessage) scheduleMessageProcessing();
             });
 
             optimizedObserver.observe(appContainer, { childList: true, subtree: true });
+
         }
     });
 };
